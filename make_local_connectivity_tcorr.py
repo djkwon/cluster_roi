@@ -68,7 +68,7 @@ def indx_1dto3d(idx,sz):
 # simple function to translate 3D matrix coordinates to 1D vector coordinates,
 # for a 3D matrix of size sz
 def indx_3dto1d(idx,sz):
-    if( rank(idx) == 1):
+    if( idx.ndim == 1):
         idx1=idx[0]*prod(sz[1:3])+idx[1]*sz[2]+idx[2]
     else:
         idx1=idx[:,0]*prod(sz[1:3])+idx[:,1]*sz[2]+idx[:,2]
@@ -168,7 +168,7 @@ def make_local_connectivity_tcorr( infile, maskfile, outfile, thresh ):
 
         # calculate the correlation between all of the voxel TCs
         R=corrcoef(tc)
-        if rank(R) == 0:
+        if R.ndim == 0:
             R=reshape(R,(1,1))
 
         # extract just the correlations with the seed TC
@@ -185,9 +185,9 @@ def make_local_connectivity_tcorr( infile, maskfile, outfile, thresh ):
         # and add their indices and values to the list 
         nzndx=nonzero(R)[0]
         if(len(nzndx)>0):
-            sparse_i=append(sparse_i,ondx1d[nzndx]-1,0)
+            sparse_i=append(sparse_i,ondx1d[nzndx]-1)
             sparse_j=append(sparse_j,(ondx1d[nndx]-1)*ones(len(nzndx)))
-            sparse_w=append(sparse_w,R[nzndx],1)
+            sparse_w=append(sparse_w,R[nzndx])
 
     # concatenate the i, j and w_ij into a single vector	
     outlist=sparse_i
